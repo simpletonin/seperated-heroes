@@ -323,4 +323,86 @@ function spawnEnemies() {
             size: 30,
             color: 'red',
             health: 3,
-            speed: baseEnemySpeed + (currentStage - 1) * 
+            speed: baseEnemySpeed + (currentStage - 1) * 0.5
+        });
+    }
+    updateHUD();
+}
+
+function gameOver() {
+    if (!isGameOver) {
+        alert('Game Over');
+        isGameOver = true;
+        stageMusic[currentStage - 1].pause();
+        backToMenu();
+    }
+}
+
+function drawBackground() {
+    const pattern = ctx.createPattern(backgroundSprite, 'repeat');
+    ctx.fillStyle = pattern;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw background
+    drawBackground();
+
+    // Draw player
+    ctx.drawImage(playerSprite, player.x - player.size / 2, player.y - player.size / 2, player.size, player.size);
+
+    // Draw spear if thrown
+    if (spearThrown) {
+        ctx.save();
+        ctx.translate(spearPosition.x, spearPosition.y);
+        ctx.rotate(spearAngle);
+        ctx.drawImage(weaponSprite, -25, -5, 50, 10);
+        ctx.restore();
+    } else {
+        // Draw spear in hand rotating
+        ctx.save();
+        ctx.translate(player.x, player.y);
+        ctx.rotate(player.weapon.angle);
+        ctx.drawImage(weaponSprite, 0, -5, player.weapon.length, 10);
+        ctx.restore();
+    }
+
+    // Update spear position
+    updateSpear();
+
+    // Update and draw enemies
+    enemies.forEach((enemy) => {
+        const angleToPlayer = Math.atan2(player.y - enemy.y, player.x - enemy.x);
+        enemy.x += Math.cos(angleToPlayer) * enemy.speed;
+        enemy.y += Math.sin(angleToPlayer) * enemy.speed;
+
+        // Check collision with player
+        const dx = player.x - enemy.x;
+        const dy = player.y - enemy.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < player.size / 2 + enemy.size / 2) {
+            player.health -= 1;
+            if (player.health <= 0) {
+                gameOver();
+            }
+        }
+
+        ctx.drawImage(enemySprite, enemy.x - enemy.size / 2, enemy.y - enemy.size / 2, enemy.size, enemy.size);
+    });
+
+    updateHUD();
+
+    if (!isGameOver) {
+        requestAnimationFrame(gameLoop);
+    }
+}
+
+async function startGame() {
+    await loadAssets();
+    alert('Stage 1 starting!');
+    spawnEnemies();
+    stageMusic[0].play();
+    gameLoop();
+}
