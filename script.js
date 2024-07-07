@@ -1,5 +1,4 @@
-const io = require('socket.io')(server);
-const socket = io();
+const socket = io();  // 웹 소켓 클라이언트 초기화
 const menu = document.getElementById('menu');
 const multiplayerMenu = document.getElementById('multiplayerMenu');
 const joinRoomMenu = document.getElementById('joinRoomMenu');
@@ -71,7 +70,7 @@ let keysPressed = {};
 let enemies = [];
 let currentStage = 1;
 const maxStage = 5;
-const baseEnemySpeed = 0.96; // Reduced speed to 0.8 times the original speed
+const baseEnemySpeed = 0.96; 
 const baseEnemyCount = 8;
 let isAttacking = false;
 
@@ -245,7 +244,6 @@ function throwSpear() {
     spearAngle = player.weapon.angle;
     attackSound.play();
 
-    // Reset spear after 0.5 seconds
     setTimeout(() => {
         spearThrown = false;
     }, 500);
@@ -256,7 +254,6 @@ function updateSpear() {
         spearPosition.x += spearVelocity.x;
         spearPosition.y += spearVelocity.y;
 
-        // Check collision with enemies
         let enemiesToRemove = [];
         enemies.forEach((enemy, index) => {
             const enemyRect = {
@@ -268,8 +265,8 @@ function updateSpear() {
             const spearRect = {
                 x: spearPosition.x,
                 y: spearPosition.y,
-                width: 50, // Assuming the spear width
-                height: 10  // Assuming the spear height
+                width: 50, 
+                height: 10  
             };
             if (rectsOverlap(enemyRect, spearRect)) {
                 enemiesToRemove.push(index);
@@ -282,12 +279,10 @@ function updateSpear() {
 
         updateHUD();
 
-        // Check if spear is out of bounds
         if (spearPosition.x < 0 || spearPosition.x > canvas.width || spearPosition.y < 0 || spearPosition.y > canvas.height) {
-            spearThrown = false; // Reset spear
+            spearThrown = false; 
         }
 
-        // Check if all enemies are defeated
         if (enemies.length === 0) {
             nextStage();
         }
@@ -346,14 +341,8 @@ function drawBackground() {
 
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw background
     drawBackground();
-
-    // Draw player
     ctx.drawImage(playerSprite, player.x - player.size / 2, player.y - player.size / 2, player.size, player.size);
-
-    // Draw spear if thrown
     if (spearThrown) {
         ctx.save();
         ctx.translate(spearPosition.x, spearPosition.y);
@@ -361,7 +350,6 @@ function gameLoop() {
         ctx.drawImage(weaponSprite, -25, -5, 50, 10);
         ctx.restore();
     } else {
-        // Draw spear in hand rotating
         ctx.save();
         ctx.translate(player.x, player.y);
         ctx.rotate(player.weapon.angle);
@@ -369,16 +357,12 @@ function gameLoop() {
         ctx.restore();
     }
 
-    // Update spear position
     updateSpear();
-
-    // Update and draw enemies
     enemies.forEach((enemy) => {
         const angleToPlayer = Math.atan2(player.y - enemy.y, player.x - enemy.x);
         enemy.x += Math.cos(angleToPlayer) * enemy.speed;
         enemy.y += Math.sin(angleToPlayer) * enemy.speed;
 
-        // Check collision with player
         const dx = player.x - enemy.x;
         const dy = player.y - enemy.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
