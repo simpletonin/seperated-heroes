@@ -1,4 +1,3 @@
-const socket = io();  // 웹 소켓 클라이언트 초기화
 const menu = document.getElementById('menu');
 const multiplayerMenu = document.getElementById('multiplayerMenu');
 const joinRoomMenu = document.getElementById('joinRoomMenu');
