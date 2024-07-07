@@ -1,5 +1,5 @@
-const socket = io();
 const io = require('socket.io')(server);
+const socket = io();
 const menu = document.getElementById('menu');
 const multiplayerMenu = document.getElementById('multiplayerMenu');
 const joinRoomMenu = document.getElementById('joinRoomMenu');
