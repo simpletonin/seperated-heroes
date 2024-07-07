@@ -99,29 +99,33 @@ function updateHUD() {
 }
 
 function showSettings() {
-    hideAllMenus();
+    menu.style.display = 'none';
     settings.style.display = 'flex';
 }
 
 function backToMenu() {
-    hideAllMenus();
+    settings.style.display = 'none';
+    multiplayerMenu.style.display = 'none';
+    joinRoomMenu.style.display = 'none';
+    roomDiv.style.display = 'none';
+    gameDiv.style.display = 'none';
     menu.style.display = 'flex';
     isGameOver = false;
 }
 
 function startLocalGame() {
-    hideAllMenus();
+    menu.style.display = 'none';
     gameDiv.style.display = 'flex';
     startGame();
 }
 
 function showMultiplayerMenu() {
-    hideAllMenus();
+    menu.style.display = 'none';
     multiplayerMenu.style.display = 'flex';
 }
 
 function showJoinRoom() {
-    hideAllMenus();
+    multiplayerMenu.style.display = 'none';
     joinRoomMenu.style.display = 'flex';
 }
 
@@ -132,7 +136,7 @@ function createRoom() {
 socket.on('roomCreated', (code) => {
     roomCode = code;
     isHost = true;
-    hideAllMenus();
+    multiplayerMenu.style.display = 'none';
     roomDiv.style.display = 'flex';
     document.getElementById('roomCodeDisplay').textContent = `Room Code: ${roomCode}`;
 });
@@ -146,7 +150,7 @@ function joinRoom() {
 
 socket.on('roomJoined', (code) => {
     roomCode = code;
-    hideAllMenus();
+    joinRoomMenu.style.display = 'none';
     roomDiv.style.display = 'flex';
     document.getElementById('roomCodeDisplay').textContent = `Room Code: ${roomCode}`;
 });
@@ -170,18 +174,9 @@ function leaveRoom() {
 }
 
 function startMultiplayerGame() {
-    hideAllMenus();
+    roomDiv.style.display = 'none';
     gameDiv.style.display = 'flex';
     startGame();
-}
-
-function hideAllMenus() {
-    menu.style.display = 'none';
-    settings.style.display = 'none';
-    multiplayerMenu.style.display = 'none';
-    joinRoomMenu.style.display = 'none';
-    roomDiv.style.display = 'none';
-    gameDiv.style.display = 'none';
 }
 
 window.addEventListener('keydown', (e) => {
